@@ -8,6 +8,18 @@ Created on Sat Nov 10 14:38:05 2018
 import random
 import sys
 
+def question_input(information):
+    '''
+    Here we will be getting input from the user and replying
+    '''
+    Asking_Phrases = ['I need you to tell me ','Please input the ',
+                      'Please provide the ','Give me the ']
+    Acknowledge_Phrases = [', got it!',', writing that down',', sweet']
+    print('* '+random.choice(Asking_Phrases)+information)
+    value = input()
+    print('* '+information+' '+random.choice(Acknowledge_Phrases)+input)
+    return value
+
 def exit_program(exit_condition):
     Exit_Phrases = {'Error':["Cannot do more until you fix that",
                     "Fix that and come back","Houston, we have a problem"],
@@ -16,6 +28,16 @@ def exit_program(exit_condition):
     print('* * * '+random.choice(Exit_Phrases[exit_condition])+' * * *')
     if (exit_condition == 'Error'):
         sys.exit(0)
+        
+class OPCUA_variables:
+    '''
+    Here we will store all the necessary OPCUA variables.
+    The chatbot will populate them
+    '''
+    IP_Address = '192.168.1.1'
+    OPCUA_Port = '4840/freeopcua/server/'
+    Object_Name = 'MyObject'
+    Variable_Name = 'MyVar'
 
 class Chatbot:
     '''
@@ -59,12 +81,25 @@ class Chatbot:
         self.check_opcua_package()
         
     def get_values(self):
-        
+        '''
+        Asks how many variables in the object, as well as sleep times
+        in the server and client
+        '''
+        print("*OK, now I need you to tell me a few things so I can set up"
+              +" the client an server files.")
+        print("Namely those are: \nIP address (e.g. 192.168.1.1)"
+             +"\nObject name (e.g. Fridge)"
+             +"\nInput name of variables one at the time (e.g. Temperature))")
+        print("When you have added all the variables you want, type in DONE")
+        print("You can RESET the OPCUA values by writing RESET")
+                
     
 
 def main():
     bot = Chatbot()
+    OPCUA = OPCUA_variables()
     bot.greetings()
+    bot.get_values()
     exit_program("Good")    
 
 main()
