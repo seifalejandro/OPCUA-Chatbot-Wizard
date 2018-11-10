@@ -15,9 +15,12 @@ def question_input(information):
     Asking_Phrases = ['I need you to tell me ','Please input the ',
                       'Please provide the ','Give me the ']
     Acknowledge_Phrases = [', got it!',', writing that down',', sweet']
-    print('* '+random.choice(Asking_Phrases)+information)
+    print('* '+random.choice(Asking_Phrases)+str(information))
     value = input()
-    print('* '+information+' '+random.choice(Acknowledge_Phrases)+input)
+    if value == '':
+        print('Defaults will be used')
+    else:
+        print('* '+str(information)+' '+str(value)+random.choice(Acknowledge_Phrases))
     return value
 
 def exit_program(exit_condition):
@@ -34,10 +37,12 @@ class OPCUA_variables:
     Here we will store all the necessary OPCUA variables.
     The chatbot will populate them
     '''
+
     IP_Address = '192.168.1.1'
     OPCUA_Port = '4840/freeopcua/server/'
     Object_Name = 'MyObject'
-    Variable_Name = 'MyVar'
+    Client_Sleep_Time = 1
+    Server_Sleep_Time = 0.5
 
 class Chatbot:
     '''
@@ -80,26 +85,43 @@ class Chatbot:
               +", with your input we can do this quickly")
         self.check_opcua_package()
         
-    def get_values(self):
+    def get_values(self,OPCUA):
         '''
         Asks how many variables in the object, as well as sleep times
-        in the server and client
+        in the server and client.
+        If an attribute is not given, keep the defaults
         '''
         print("*OK, now I need you to tell me a few things so I can set up"
               +" the client an server files.")
         print("Namely those are: \nIP address (e.g. 192.168.1.1)"
              +"\nObject name (e.g. Fridge)"
              +"\nInput name of variables one at the time (e.g. Temperature))")
-        print("When you have added all the variables you want, type in DONE")
         print("You can RESET the OPCUA values by writing RESET")
-                
-    
-
+        print("\n Also, there are default values there. So if you don't know," 
+              +" keep em defaults and see if it still works")
+        for attr in dir(OPCUA):
+            if not attr.startswith("__"):
+                value = question_input(attr)
+                if value == '':
+                    continue
+                else:
+                    setattr(OPCUA, attr,value)
+            else:
+                continue
+        Variables_List = []
+        print("When you have added all the variables you want, type in DONE")
+        while(True):
+            if (question_input('VARIABLE NAME') == 'DONE'):
+                print('OK, got all the variables')
+                break
+            Variables_List.append(question_input('VARIABLE NAME'))
+            
+            
 def main():
-    bot = Chatbot()
     OPCUA = OPCUA_variables()
+    bot = Chatbot()
     bot.greetings()
-    bot.get_values()
+    bot.get_values(OPCUA)
     exit_program("Good")    
 
 main()
