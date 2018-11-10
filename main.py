@@ -24,6 +24,9 @@ def question_input(information):
     return value
 
 def exit_program(exit_condition):
+    '''
+    Tells you error/success phrases. Exits after error
+    '''
     Exit_Phrases = {'Error':["Cannot do more until you fix that",
                     "Fix that and come back","Houston, we have a problem"],
                     'Good':["Seems my job is done, bye!","That's all, enjoy!",
@@ -109,12 +112,19 @@ class Chatbot:
             else:
                 continue
         Variables_List = []
+        print('\nOK, so the variables I have so far are\n')
+        for attr in dir(OPCUA):
+            if not attr.startswith("__"):
+                print(attr,getattr(OPCUA,attr))
+#        print("If this is not OK, write RESET") <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         print("When you have added all the variables you want, type in DONE")
         while(True):
             if (question_input('VARIABLE NAME') == 'DONE'):
-                print('OK, got all the variables')
+                print(question_input('VARIABLE NAME'))
                 break
             Variables_List.append(question_input('VARIABLE NAME'))
+        print('Ok, so we have {0} variables.'.format(len(Variables_List)))
+        print("These are :"+str(Variables_List))
             
             
 def main():
